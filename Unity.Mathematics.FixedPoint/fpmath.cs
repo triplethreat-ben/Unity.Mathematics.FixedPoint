@@ -25,7 +25,7 @@ namespace Unity.Mathematics.FixedPoint
 
         /// <summary>Returns the bit pattern of a fp as a uint.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint asuint(fp x) { return (uint)math.asint((uint)x); }
+        public static uint asuint(fp x) { return (uint)math.asint((float)x); }
 
         /// <summary>Returns the bit pattern of a fp2 as a uint2.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -112,6 +112,29 @@ namespace Unity.Mathematics.FixedPoint
         /// <summary>Returns the componentwise hyperbolic tangent of a fp4 vector.</summary>
         public static fp4 tanh(fp4 x) { return new fp4(tanh(x.x), tanh(x.y), tanh(x.z), tanh(x.w)); }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static fp acos(fp x) => (fp)System.Math.Acos((float)x);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static fp2 acos(fp2 x) { return new fp2(acos(x.x), acos(x.y)); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static fp3 acos(fp3 x) { return new fp3(acos(x.x), acos(x.y), acos(x.z)); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static fp4 acos(fp4 x) { return new fp4(acos(x.x), acos(x.y), acos(x.z), acos(x.w)); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static fp asin(fp x) { return (fp)System.Math.Asin((float)x); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static fp2 asin(fp2 x) { return new fp2(asin(x.x), asin(x.y)); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static fp3 asin(fp3 x) { return new fp3(asin(x.x), asin(x.y), asin(x.z)); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static fp4 asin(fp4 x) { return new fp4(asin(x.x), asin(x.y), asin(x.z), asin(x.w)); }
 
         /// <summary>Returns the dot product of two fp values. Equivalent to multiplication.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -128,7 +151,6 @@ namespace Unity.Mathematics.FixedPoint
         /// <summary>Returns the dot product of two fp4 vectors.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static fp dot(fp4 x, fp4 y) { return x.x * y.x + x.y * y.y + x.z * y.z + x.w * y.w; }
-
 
         /// <summary>Returns the result of clamping the fp value x into the interval [0, 1].</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -494,53 +516,53 @@ namespace Unity.Mathematics.FixedPoint
         public static fp4 pow(fp4 x, fp4 y) { return new fp4(pow(x.x, y.x), pow(x.y, y.y), pow(x.z, y.z), pow(x.w, y.w)); }
 
 
-        [System.Obsolete(NOT_SUPPORTED_YET, true)]
+        // [System.Obsolete(NOT_SUPPORTED_YET, true)]
         /// <summary>Returns the base-e exponential of x.</summary>
-        public static fp exp(fp x) { throw new System.NotImplementedException("fp doesn't support exp"); }
+        public static fp exp(fp x) { return (fp)System.Math.Exp((float)x); }
 
-        [System.Obsolete(NOT_SUPPORTED_YET, true)]
+        // [System.Obsolete(NOT_SUPPORTED_YET, true)]
         /// <summary>Returns the componentwise base-e exponential of x.</summary>
         public static fp2 exp(fp2 x) { return new fp2(exp(x.x), exp(x.y)); }
 
-        [System.Obsolete(NOT_SUPPORTED_YET, true)]
+        // [System.Obsolete(NOT_SUPPORTED_YET, true)]
         /// <summary>Returns the componentwise base-e exponential of x.</summary>
         public static fp3 exp(fp3 x) { return new fp3(exp(x.x), exp(x.y), exp(x.z)); }
 
-        [System.Obsolete(NOT_SUPPORTED_YET, true)]
+        // [System.Obsolete(NOT_SUPPORTED_YET, true)]
         /// <summary>Returns the componentwise base-e exponential of x.</summary>
         public static fp4 exp(fp4 x) { return new fp4(exp(x.x), exp(x.y), exp(x.z), exp(x.w)); }
 
 
-        [System.Obsolete(NOT_SUPPORTED_YET, true)]
+        // [System.Obsolete(NOT_SUPPORTED_YET, true)]
         /// <summary>Returns the base-2 exponential of x.</summary>
         public static fp exp2(fp x) { return exp(x * 0.69314718m); }
 
-        [System.Obsolete(NOT_SUPPORTED_YET, true)]
+        // [System.Obsolete(NOT_SUPPORTED_YET, true)]
         /// <summary>Returns the componentwise base-2 exponential of x.</summary>
         public static fp2 exp2(fp2 x) { return new fp2(exp2(x.x), exp2(x.y)); }
 
-        [System.Obsolete(NOT_SUPPORTED_YET, true)]
+        // [System.Obsolete(NOT_SUPPORTED_YET, true)]
         /// <summary>Returns the componentwise base-2 exponential of x.</summary>
         public static fp3 exp2(fp3 x) { return new fp3(exp2(x.x), exp2(x.y), exp2(x.z)); }
 
-        [System.Obsolete(NOT_SUPPORTED_YET, true)]
+        // [System.Obsolete(NOT_SUPPORTED_YET, true)]
         /// <summary>Returns the componentwise base-2 exponential of x.</summary>
         public static fp4 exp2(fp4 x) { return new fp4(exp2(x.x), exp2(x.y), exp2(x.z), exp2(x.w)); }
 
 
-        [System.Obsolete(NOT_SUPPORTED_YET, true)]
+        // [System.Obsolete(NOT_SUPPORTED_YET, true)]
         /// <summary>Returns the base-10 exponential of x.</summary>
         public static fp exp10(fp x) { return exp(x * 2.30258509m); }
 
-        [System.Obsolete(NOT_SUPPORTED_YET, true)]
+        // [System.Obsolete(NOT_SUPPORTED_YET, true)]
         /// <summary>Returns the componentwise base-10 exponential of x.</summary>
         public static fp2 exp10(fp2 x) { return new fp2(exp10(x.x), exp10(x.y)); }
 
-        [System.Obsolete(NOT_SUPPORTED_YET, true)]
+        // [System.Obsolete(NOT_SUPPORTED_YET, true)]
         /// <summary>Returns the componentwise base-10 exponential of x.</summary>
         public static fp3 exp10(fp3 x) { return new fp3(exp10(x.x), exp10(x.y), exp10(x.z)); }
 
-        [System.Obsolete(NOT_SUPPORTED_YET, true)]
+        // [System.Obsolete(NOT_SUPPORTED_YET, true)]
         /// <summary>Returns the componentwise base-10 exponential of x.</summary>
         public static fp4 exp10(fp4 x) { return new fp4(exp10(x.x), exp10(x.y), exp10(x.z), exp10(x.w)); }
 
@@ -1002,5 +1024,19 @@ namespace Unity.Mathematics.FixedPoint
         /// <summary>Returns the horizontal sum of components of a fp4 vector.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static fp csum(fp4 x) { return (x.x + x.y) + (x.z + x.w); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static fp asfp(uint x) { return (fp)math.asfloat((int)x); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static fp2 asfp(uint2 x) { return new fp2(asfp(x.x), asfp(x.y)); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static fp3 asfp(uint3 x) { return new fp3(asfp(x.x), asfp(x.y), asfp(x.z)); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static fp4 asfp(uint4 x) { return new fp4(asfp(x.x), asfp(x.y), asfp(x.z), asfp(x.w)); }
     }
+
+
 }

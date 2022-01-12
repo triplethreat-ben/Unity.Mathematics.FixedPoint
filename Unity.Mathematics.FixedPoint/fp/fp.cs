@@ -142,7 +142,7 @@ namespace Unity.Mathematics.FixedPoint
         }
 
         /// <summary>
-        /// Adds x and y. Performs saturating addition, i.e. in case of overflow, 
+        /// Adds x and y. Performs saturating addition, i.e. in case of overflow,
         /// rounds to MinValue or MaxValue depending on sign of operands.
         /// </summary>
         public static fp operator +(fp x, fp y)
@@ -167,7 +167,7 @@ namespace Unity.Mathematics.FixedPoint
         }
 
         /// <summary>
-        /// Subtracts y from x. Performs saturating substraction, i.e. in case of overflow, 
+        /// Subtracts y from x. Performs saturating substraction, i.e. in case of overflow,
         /// rounds to MinValue or MaxValue depending on sign of operands.
         /// </summary>
         public static fp operator -(fp x, fp y)
@@ -473,7 +473,7 @@ namespace Unity.Mathematics.FixedPoint
 
             /* The algorithm is based on the power series for exp(x):
              * http://en.wikipedia.org/wiki/Exponential_function#Formal_definition
-             * 
+             *
              * From term n, we get term n+1 by multiplying with x/n.
              * When the sum term drops to zero, we can stop summing.
              */
@@ -1035,11 +1035,11 @@ namespace Unity.Mathematics.FixedPoint
             using (var writer = new StreamWriter("Fix64SinLut.cs"))
             {
                 writer.Write(
-@"namespace Unity.Mathematics.FixedPoint 
+@"namespace Unity.Mathematics.FixedPoint
 {
-    partial struct Fix64 
+    partial struct Fix64
     {
-        public static readonly long[] SinLut = new[] 
+        public static readonly long[] SinLut = new[]
         {");
                 int lineCounter = 0;
                 for (int i = 0; i < LUT_SIZE; ++i)
@@ -1067,11 +1067,11 @@ namespace Unity.Mathematics.FixedPoint
             using (var writer = new StreamWriter("Fix64TanLut.cs"))
             {
                 writer.Write(
-@"namespace Unity.Mathematics.FixedPoint 
+@"namespace Unity.Mathematics.FixedPoint
 {
-    partial struct Fix64 
+    partial struct Fix64
     {
-        public static readonly long[] TanLut = new[] 
+        public static readonly long[] TanLut = new[]
         {");
                 int lineCounter = 0;
                 for (int i = 0; i < LUT_SIZE; ++i)

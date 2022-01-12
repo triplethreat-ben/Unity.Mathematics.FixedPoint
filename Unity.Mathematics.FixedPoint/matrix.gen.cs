@@ -8,6 +8,7 @@
 //------------------------------------------------------------------------------
 using System;
 using System.Runtime.CompilerServices;
+using static Unity.Mathematics.FixedPoint.fpmath;
 
 namespace Unity.Mathematics.FixedPoint
 {
@@ -463,6 +464,107 @@ namespace Unity.Mathematics.FixedPoint
                 a.c0 * b.c2.x + a.c1 * b.c2.y + a.c2 * b.c2.z + a.c3 * b.c2.w,
                 a.c0 * b.c3.x + a.c1 * b.c3.y + a.c2 * b.c3.z + a.c3 * b.c3.w);
         }
+    }
 
+    public partial struct fp4x4
+    {
+        public fp4x4(fp3x3 rotation, fp3 translation)
+        {
+            c0 = new fp4(rotation.c0, 0);
+            c1 = new fp4(rotation.c1, 0);
+            c2 = new fp4(rotation.c2, 0);
+            c3 = new fp4(translation, 1);
+        }
+
+        public fp4x4(fpquaternion rotation, fp3 translation)
+        {
+            fp3x3 rot = new fp3x3(rotation);
+            c0 = fp4(rot.c0, 0);
+            c1 = fp4(rot.c1, 0);
+            c2 = fp4(rot.c2, 0);
+            c3 = fp4(translation, 1);
+        }
+    }
+
+    public partial struct  fp3x3
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static fp3x3 LookRotation(fp3 forward, fp3 up)
+        {
+            fp3 t = fpmath.normalize(fpmath.cross(up, forward));
+            return new fp3x3(t, fpmath.cross(forward, t), forward);
+        }
+
+        /// <summary>
+        /// Returns a fp3x3 view rotation matrix given a forward vector and an up vector.
+        /// The two input vectors are not assumed to be unit length.
+        /// If the magnitude of either of the vectors is so extreme that the calculation cannot be carried out reliably or the vectors are collinear,
+        /// the identity will be returned instead.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static fp3x3 LookRotationSafe(fp3 forward, fp3 up)
+        {
+            fp forwardLengthSq = dot(forward, forward);
+            fp upLengthSq = dot(up, up);
+
+            forward *= rsqrt(forwardLengthSq);
+            up *= rsqrt(upLengthSq);
+
+            fp3 t = cross(up, forward);
+            fp tLengthSq = dot(t, t);
+            t *= rsqrt(tLengthSq);
+
+            fp mn = min(min(forwardLengthSq, upLengthSq), tLengthSq);
+            fp mx = max(max(forwardLengthSq, upLengthSq), tLengthSq);
+
+            bool accept = mn > fp.min_value && mx < fp.max_value && fpmath.isfinite(forwardLengthSq) && fpmath.isfinite(upLengthSq) && fpmath.isfinite(tLengthSq);
+            return fp3x3(
+                fpmath.select(fp3(1,0,0), t, accept),
+                fpmath.select(fp3(0,1,0), fpmath.cross(forward, t), accept),
+                fpmath.select(fp3(0,0,1), forward, accept));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static fp3x3 AxisAngle(fp3 axis, fp angle)
+        {
+            fp sina, cosa;
+            sincos(angle, out sina, out cosa);
+
+            fp3 u = axis;
+            fp3 u_yzx = u.yzx;
+            fp3 u_zxy = u.zxy;
+            fp3 u_inv_cosa = u - u * cosa;  // u * (1.0f - cosa);
+            fp4 t = fp4(u * sina, cosa);
+
+            uint3 ppn = math.uint3(0x00000000, 0x00000000, 0x80000000);
+            uint3 npp = math.uint3(0x80000000, 0x00000000, 0x00000000);
+            uint3 pnp = math.uint3(0x00000000, 0x80000000, 0x00000000);
+
+            return fp3x3(
+                u.x * u_inv_cosa + asfp(asuint(t.wzy) ^ ppn),
+                u.y * u_inv_cosa + asfp(asuint(t.zwx) ^ npp),
+                u.z * u_inv_cosa + asfp(asuint(t.yxw) ^ pnp)
+            );
+            /*
+            return float3x3(
+                cosa + u.x * u.x * (1.0f - cosa),       u.y * u.x * (1.0f - cosa) - u.z * sina, u.z * u.x * (1.0f - cosa) + u.y * sina,
+                u.x * u.y * (1.0f - cosa) + u.z * sina, cosa + u.y * u.y * (1.0f - cosa),       u.y * u.z * (1.0f - cosa) - u.x * sina,
+                u.x * u.z * (1.0f - cosa) - u.y * sina, u.y * u.z * (1.0f - cosa) + u.x * sina, cosa + u.z * u.z * (1.0f - cosa)
+                );
+                */
+        }
+
+        public fp3x3(fpquaternion q)
+        {
+            fp4 v = q.value;
+            fp4 v2 = v + v;
+
+            uint3 npn = math.uint3(0x80000000, 0x00000000, 0x80000000);
+            uint3 nnp = math.uint3(0x80000000, 0x80000000, 0x00000000);
+            uint3 pnn = math.uint3(0x00000000, 0x80000000, 0x80000000);
+            c0 = v2.y * asfp(asuint(v.yxw) ^ npn) - v2.z * asfp(asuint(v.zwx) ^ pnn) + fp3(1, 0, 0);
+            c1 = v2.z * asfp(asuint(v.wzy) ^ nnp) - v2.x * asfp(asuint(v.yxw) ^ npn) + fp3(0, 1, 0);
+            c2 = v2.x * asfp(asuint(v.zwx) ^ pnn) - v2.y * asfp(asuint(v.wzy) ^ nnp) + fp3(0, 0, 1);
+        }
     }
 }
